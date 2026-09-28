@@ -1,0 +1,5 @@
+billing_date,provider,account_id,service,region,resource_id,resource_name,team,environment,usage_quantity,usage_unit,cost,currency
+2026-01-01,AWS,aws-prod-001,EC2,eu-west-1,aws-ec2-000001,ec2-devops-production-0001,DevOps,Production,384.04,hours,-100.0,USD
+2026-01-01,AWS,aws-prod-001,RDS,ap-south-1,aws-rds-000002,rds-analytics-development-0002,Analytics,Development,-50.0,hours,25.67,USD
+2026-01-01,AWS,aws-prod-001,Lambda,eu-west-1,,lambda-analytics-production-0003,Analytics,Production,3654743.64,requests,72.79,USD
+,AWS,aws-prod-001,EBS,us-east-1,aws-ebs-000004,ebs-data-engineering-staging-0004,Data Engineering,Staging,898.34,GB-month,75.0,USD
