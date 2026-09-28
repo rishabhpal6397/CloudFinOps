@@ -17,6 +17,7 @@ sys.path.insert(0, str(PROJECT_ROOT))
 # --------------------------------------------------
 # Import pipeline functions
 # --------------------------------------------------
+from data_engineering.utils.logger import get_logger
 
 from data_engineering.ingestion.load_billing_data import (
     load_billing_data,
@@ -72,10 +73,11 @@ TRANSFORMED_FILE = (
 # Logging
 # --------------------------------------------------
 
-def log(message: str) -> None:
-    """Print a pipeline log message."""
+logger = get_logger()
 
-    print(f"[ETL] {message}")
+
+def log(message: str) -> None:
+    logger.info(message)
 
 
 # --------------------------------------------------
@@ -170,49 +172,15 @@ def run_pipeline() -> None:
         time.perf_counter() - start_time
     )
 
-    print(
-        "\n=========================================="
-    )
-
-    print(
-        "        BILLING ETL PIPELINE RESULT"
-    )
-
-    print(
-        "=========================================="
-    )
-
-    print(
-        f"Records read        : {records_read:,}"
-    )
-
-    print(
-        f"Duplicates removed  : {duplicates_removed:,}"
-    )
-
-    print(
-        f"Invalid records     : {len(invalid_df):,}"
-    )
-
-    print(
-        f"Valid records       : {len(cleaned_df):,}"
-    )
-
-    print(
-        f"Transformed records : {len(transformed_df):,}"
-    )
-
-    print(
-        f"Execution time      : {execution_time:.3f} seconds"
-    )
-
-    print(
-        "Status              : SUCCESS"
-    )
-
-    print(
-        "=========================================="
-    )
+    logger.info(
+    "ETL completed successfully | "
+    f"records_read={records_read} | "
+    f"duplicates_removed={duplicates_removed} | "
+    f"invalid_records={len(invalid_df)} | "
+    f"valid_records={len(cleaned_df)} | "
+    f"transformed_records={len(transformed_df)} | "
+    f"execution_time={execution_time:.3f}s"
+)
 
 
 # --------------------------------------------------

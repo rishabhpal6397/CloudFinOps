@@ -1,0 +1,6 @@
+2026-09-28 07:23:36,169 | INFO | cloudfinops.etl | Starting billing ETL pipeline
+2026-09-28 07:23:36,172 | INFO | cloudfinops.etl | Stage 1/4 - Extract
+2026-09-28 07:23:36,392 | INFO | cloudfinops.etl | Stage 2/4 - Validate
+2026-09-28 07:23:36,461 | INFO | cloudfinops.etl | Stage 3/4 - Clean
+2026-09-28 07:23:37,037 | INFO | cloudfinops.etl | Stage 4/4 - Transform
+2026-09-28 07:23:37,859 | INFO | cloudfinops.etl | ETL completed successfully | records_read=40950 | duplicates_removed=0 | invalid_records=0 | valid_records=40950 | transformed_records=40950 | execution_time=1.691s
