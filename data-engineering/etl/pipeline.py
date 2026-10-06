@@ -31,8 +31,9 @@ def run_pipeline(
     output_dir: str | Path = "data/processed",
     reports_dir: str | Path = "data/reports",
     log_level: str = "INFO",
+    load_to_db: bool = False,
 ) -> dict:
-    """Run the full ETL pipeline. Returns a summary dict."""
+    """Run the full ETL pipeline. Optionally load into MySQL."""
     _configure_logging(log_level)
 
     started = time.time()
@@ -66,10 +67,24 @@ def run_pipeline(
     # -- 5. Enrich -----------------------------------------------------
     enriched = enrich.enrich(transformed)
 
-    # -- 6. Load -------------------------------------------------------
+    # -- 6. Load: CSV --------------------------------------------------
     artifacts = load.save_processed(enriched, output_dir)
     load.save_stats(clean_stats, output_dir)
     summary["artifacts"] = {k: str(v) for k, v in artifacts.items()}
+
+    # -- 7. Load: MySQL (optional) ------------------------------------
+    if load_to_db:
+        from etl.db import get_engine, test_connection
+        engine = get_engine()
+        if not test_connection(engine):
+            raise RuntimeError("DB connection test failed")
+        db_stats = load.load_to_mysql(
+            enriched,
+            engine,
+            source_file=str(input_path),
+            reset_facts=True,
+        )
+        summary["db_load"] = db_stats
 
     summary["duration_seconds"] = round(time.time() - started, 2)
     logger.info(
@@ -96,10 +111,14 @@ def _cli() -> int:
     parser.add_argument("--output", default="data/processed", help="Output directory")
     parser.add_argument("--reports", default="data/reports", help="Reports directory")
     parser.add_argument("--log-level", default="INFO", help="Log level")
+    parser.add_argument(
+        "--load-db", action="store_true",
+        help="After saving CSV, load into MySQL star schema",
+    )
     args = parser.parse_args()
 
     try:
-        summary = run_pipeline(args.input, args.output, args.reports, args.log_level)
+        summary = run_pipeline(args.input, args.output, args.reports, args.log_level, load_to_db=args.load_db)
     except Exception as exc:
         logging.getLogger("etl.pipeline").exception("Pipeline failed: %s", exc)
         return 1

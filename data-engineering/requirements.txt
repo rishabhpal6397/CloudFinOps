@@ -18,9 +18,10 @@ pytest==8.3.3
 
 # ---------- Phase 3: DB loading ----------
 # Uncomment when you start Phase 2
-# SQLAlchemy==2.0.36
-# PyMySQL==1.1.1
-# openpyxl==3.1.5
+SQLAlchemy==2.0.36
+PyMySQL==1.1.1
+openpyxl==3.1.5
+cryptography==43.0.3        # required by PyMySQL for MySQL 8 caching_sha2_password
 
 # ---------- Phase 6 & 7: ML ----------
 # Uncomment when you start Phase 6
