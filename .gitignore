@@ -1,0 +1,60 @@
+# ---------- Environment ----------
+.env
+.env.local
+.env.*.local
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ipynb_checkpoints/
+*.joblib
+*.pkl
+
+# ---------- Java / Maven ----------
+target/
+*.class
+*.jar
+*.war
+!.mvn/wrapper/maven-wrapper.jar
+.mvn/timing.properties
+
+# ---------- Node ----------
+node_modules/
+dist/
+build/
+.vite/
+npm-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ---------- Data (regenerable) ----------
+data/raw/*.csv
+data/raw/*.xlsx
+data/processed/*.csv
+data/processed/*.parquet
+data/reports/*.csv
+data/reports/*.html
+!data/**/.gitkeep
+
+# ---------- ML artifacts ----------
+ml/models/*.joblib
+ml/models/*.pkl
+ml/models/*.h5
+
+# ---------- IDE ----------
+.idea/
+.vscode/*
+!.vscode/extensions.json
+*.iml
+.DS_Store
+Thumbs.db
+
+# ---------- Logs ----------
+*.log
+logs/

@@ -1,0 +1,32 @@
+{
+  "name": "CloudFinOps",
+  "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.12"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/setup.sh",
+  "forwardPorts": [3306, 8080, 5173],
+  "portsAttributes": {
+    "3306": { "label": "MySQL", "onAutoForward": "silent" },
+    "8080": { "label": "Spring Boot API", "onAutoForward": "notify" },
+    "5173": { "label": "React Dashboard", "onAutoForward": "openBrowser" }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-python.python",
+        "ms-python.vscode-pylance",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "cweijan.vscode-mysql-client2",
+        "mtxr.sqltools",
+        "bierner.markdown-mermaid"
+      ]
+    }
+  }
+}
