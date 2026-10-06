@@ -1,0 +1,14 @@
+{
+  "rows_in": 119463,
+  "whitespace_cleaned": 0,
+  "provider_normalised": 0,
+  "environment_normalised": 0,
+  "billing_date_parse_failures": 0,
+  "cost_parse_failures": 0,
+  "usage_quantity_parse_failures": 0,
+  "resource_name_filled": 0,
+  "dropped_null_critical": 0,
+  "dropped_duplicates": 0,
+  "rows_out": 119463,
+  "rows_dropped_total": 0
+}

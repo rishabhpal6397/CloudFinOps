@@ -1,0 +1,1 @@
+"""CloudFinOps – Python ETL pipeline package."""

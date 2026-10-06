@@ -11,7 +11,12 @@ Faker==30.3.0
 python-dotenv==1.0.1
 tqdm==4.67.1
 
-# ---------- Phase 2 & 3: ETL + DB loading ----------
+
+# ---------- Phase 2: ETL ----------
+pytest==8.3.3
+
+
+# ---------- Phase 3: DB loading ----------
 # Uncomment when you start Phase 2
 # SQLAlchemy==2.0.36
 # PyMySQL==1.1.1
