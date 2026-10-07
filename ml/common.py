@@ -157,12 +157,31 @@ def write_anomalies(engine: Engine, df: pd.DataFrame, method: str) -> int:
     for r in df.itertuples(index=False):
         rows.append({
             "anomaly_date":     r.anomaly_date,
-            "service_key":      int(r.service_key) if r.service_key is not None and not pd.isna(r.service_key) else None,
-            "resource_key":     int(r.resource_key) if r.resource_key is not None and not pd.isna(r.resource_key) else None,
-            "expected_cost":    float(r.expected_cost) if r.expected_cost is not None else None,
-            "actual_cost":      float(r.actual_cost),
-            "deviation":        float(r.deviation),
-            "anomaly_score":    float(r.anomaly_score),
+
+            "service_key": (
+                int(pd.to_numeric(r.service_key))
+                if r.service_key is not None and not pd.isna(r.service_key)
+                else None
+            ),
+
+            "resource_key": (
+                int(pd.to_numeric(r.resource_key))
+                if r.resource_key is not None and not pd.isna(r.resource_key)
+                else None
+            ),
+
+            "expected_cost": (
+                float(pd.to_numeric(r.expected_cost))
+                if r.expected_cost is not None and not pd.isna(r.expected_cost)
+                else None
+            ),
+
+            "actual_cost": float(pd.to_numeric(r.actual_cost)),
+
+            "deviation": float(pd.to_numeric(r.deviation)),
+
+            "anomaly_score": float(pd.to_numeric(r.anomaly_score)),
+
             "severity":         r.severity,
             "detection_method": r.detection_method,
             "details":          r.details,
