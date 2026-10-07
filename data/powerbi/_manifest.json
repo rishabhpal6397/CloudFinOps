@@ -1,0 +1,284 @@
+{
+  "generated_at": "2026-10-07T06:13:46.990247+00:00",
+  "views": {
+    "vw_daily_cost": {
+      "rows": 365,
+      "columns": [
+        "date_key",
+        "full_date",
+        "year",
+        "quarter",
+        "month",
+        "year_month",
+        "day_name",
+        "is_weekend",
+        "record_count",
+        "total_cost",
+        "avg_record_cost"
+      ],
+      "size_kb": 24.8
+    },
+    "vw_monthly_cost": {
+      "rows": 12,
+      "columns": [
+        "year",
+        "month",
+        "year_month",
+        "record_count",
+        "total_cost",
+        "prev_month_cost",
+        "mom_change",
+        "mom_change_pct"
+      ],
+      "size_kb": 0.7
+    },
+    "vw_provider_monthly": {
+      "rows": 36,
+      "columns": [
+        "year_month",
+        "provider_name",
+        "total_cost"
+      ],
+      "size_kb": 0.8
+    },
+    "vw_service_monthly": {
+      "rows": 360,
+      "columns": [
+        "year_month",
+        "service_name",
+        "service_category",
+        "total_cost"
+      ],
+      "size_kb": 12.4
+    },
+    "vw_team_monthly": {
+      "rows": 108,
+      "columns": [
+        "year_month",
+        "team_name",
+        "total_cost"
+      ],
+      "size_kb": 2.9
+    },
+    "vw_environment_monthly": {
+      "rows": 36,
+      "columns": [
+        "year_month",
+        "environment_name",
+        "total_cost"
+      ],
+      "size_kb": 1.0
+    },
+    "vw_cost_by_provider": {
+      "rows": 3,
+      "columns": [
+        "provider_key",
+        "provider_name",
+        "provider_display",
+        "record_count",
+        "total_cost",
+        "pct_of_total"
+      ],
+      "size_kb": 0.2
+    },
+    "vw_cost_by_service": {
+      "rows": 30,
+      "columns": [
+        "service_key",
+        "service_name",
+        "service_category",
+        "record_count",
+        "total_cost",
+        "avg_record_cost"
+      ],
+      "size_kb": 1.4
+    },
+    "vw_cost_by_team": {
+      "rows": 9,
+      "columns": [
+        "team_key",
+        "team_name",
+        "record_count",
+        "total_cost",
+        "pct_of_total"
+      ],
+      "size_kb": 0.3
+    },
+    "vw_cost_by_environment": {
+      "rows": 3,
+      "columns": [
+        "environment_key",
+        "environment_name",
+        "record_count",
+        "total_cost",
+        "pct_of_total"
+      ],
+      "size_kb": 0.2
+    },
+    "vw_cost_by_region": {
+      "rows": 15,
+      "columns": [
+        "region_key",
+        "region_code",
+        "record_count",
+        "total_cost"
+      ],
+      "size_kb": 0.5
+    },
+    "vw_cost_by_account": {
+      "rows": 9,
+      "columns": [
+        "account_key",
+        "account_id",
+        "provider_name",
+        "record_count",
+        "total_cost"
+      ],
+      "size_kb": 0.4
+    },
+    "vw_cost_by_resource": {
+      "rows": 553,
+      "columns": [
+        "resource_key",
+        "resource_id",
+        "resource_name",
+        "provider_name",
+        "service_name",
+        "service_category",
+        "team_name",
+        "environment_name",
+        "record_count",
+        "total_cost"
+      ],
+      "size_kb": 84.2
+    },
+    "vw_cost_by_dimension_long": {
+      "rows": 69,
+      "columns": [
+        "dimension_type",
+        "dimension_value",
+        "total_cost",
+        "record_count"
+      ],
+      "size_kb": 2.3
+    },
+    "vw_cost_detail": {
+      "rows": 119463,
+      "columns": [
+        "cost_key",
+        "date_key",
+        "full_date",
+        "year",
+        "quarter",
+        "month",
+        "year_month",
+        "day_name",
+        "is_weekend",
+        "provider_name",
+        "provider_display",
+        "account_id",
+        "service_name",
+        "service_category",
+        "region_code",
+        "team_name",
+        "environment_name",
+        "resource_id",
+        "resource_name",
+        "usage_quantity",
+        "usage_unit",
+        "cost",
+        "currency",
+        "cost_per_unit",
+        "tag_env",
+        "tag_team",
+        "tag_cost_center",
+        "tag_owner"
+      ],
+      "size_kb": 36331.6
+    },
+    "vw_kpi_summary": {
+      "rows": 1,
+      "columns": [
+        "total_cost_all_time",
+        "total_records",
+        "latest_month",
+        "latest_month_cost",
+        "previous_month",
+        "previous_month_cost",
+        "mom_change_amount",
+        "mom_change_pct"
+      ],
+      "size_kb": 0.2
+    },
+    "vw_anomalies": {
+      "rows": 0,
+      "columns": [
+        "anomaly_id",
+        "anomaly_date",
+        "service_name",
+        "service_category",
+        "resource_id",
+        "resource_name",
+        "expected_cost",
+        "actual_cost",
+        "deviation",
+        "anomaly_score",
+        "severity",
+        "detection_method",
+        "created_at"
+      ],
+      "size_kb": 0.2
+    },
+    "vw_forecasts": {
+      "rows": 0,
+      "columns": [
+        "forecast_id",
+        "forecast_date",
+        "generated_on",
+        "forecast_period",
+        "service_name",
+        "service_category",
+        "team_name",
+        "predicted_cost",
+        "lower_bound",
+        "upper_bound",
+        "model_name",
+        "created_at"
+      ],
+      "size_kb": 0.2
+    },
+    "vw_optimization_savings": {
+      "rows": 0,
+      "columns": [
+        "category",
+        "priority",
+        "status",
+        "recommendation_count",
+        "total_estimated_monthly_saving",
+        "avg_estimated_monthly_saving"
+      ],
+      "size_kb": 0.1
+    },
+    "vw_budget_vs_actual": {
+      "rows": 0,
+      "columns": [
+        "budget_id",
+        "budget_name",
+        "budget_scope",
+        "scope_value",
+        "budget_period",
+        "budget_amount",
+        "currency",
+        "threshold_warning",
+        "threshold_critical",
+        "start_date",
+        "end_date",
+        "actual_amount",
+        "utilization_pct",
+        "remaining_amount",
+        "status"
+      ],
+      "size_kb": 0.2
+    }
+  }
+}

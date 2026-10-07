@@ -39,6 +39,7 @@ data/raw/*.xlsx
 data/processed/*.csv
 data/processed/*.parquet
 data/reports/*.csv
+data/powerbi/*.csv
 data/reports/*.html
 !data/**/.gitkeep
 
