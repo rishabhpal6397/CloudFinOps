@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-10-07T06:13:46.990247+00:00",
+  "generated_at": "2026-10-08T09:22:18.661696+00:00",
   "views": {
     "vw_daily_cost": {
       "rows": 365,
@@ -150,7 +150,7 @@
         "record_count",
         "total_cost"
       ],
-      "size_kb": 84.2
+      "size_kb": 84.3
     },
     "vw_cost_by_dimension_long": {
       "rows": 69,
@@ -194,7 +194,7 @@
         "tag_cost_center",
         "tag_owner"
       ],
-      "size_kb": 36331.6
+      "size_kb": 36347.9
     },
     "vw_kpi_summary": {
       "rows": 1,
@@ -211,7 +211,7 @@
       "size_kb": 0.2
     },
     "vw_anomalies": {
-      "rows": 0,
+      "rows": 253,
       "columns": [
         "anomaly_id",
         "anomaly_date",
@@ -227,10 +227,10 @@
         "detection_method",
         "created_at"
       ],
-      "size_kb": 0.2
+      "size_kb": 27.5
     },
     "vw_forecasts": {
-      "rows": 0,
+      "rows": 2294,
       "columns": [
         "forecast_id",
         "forecast_date",
@@ -245,10 +245,10 @@
         "model_name",
         "created_at"
       ],
-      "size_kb": 0.2
+      "size_kb": 256.4
     },
     "vw_optimization_savings": {
-      "rows": 0,
+      "rows": 5,
       "columns": [
         "category",
         "priority",
@@ -257,7 +257,7 @@
         "total_estimated_monthly_saving",
         "avg_estimated_monthly_saving"
       ],
-      "size_kb": 0.1
+      "size_kb": 0.3
     },
     "vw_budget_vs_actual": {
       "rows": 0,

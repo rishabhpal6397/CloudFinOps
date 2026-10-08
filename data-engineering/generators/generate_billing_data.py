@@ -164,7 +164,7 @@ def build_resource_catalog() -> pd.DataFrame:
                         resource_id = f"{service.lower()}-{fake.hexify(text='^^^^^^^^^^')}"
                 elif provider == "Azure":
                     resource_id = (
-                        f"/subscriptions/{fake.uuid4()[:8]}-{fake.uuid4()[:4]}"
+                        f"/subscriptions/{str(fake.uuid4())[:8]}-{str(fake.uuid4())[:4]}"
                         f"/resourceGroups/{fake.slug()}/providers/"
                         f"Microsoft.{service}/{fake.slug()}-{random.randint(1, 99)}"
                     )
@@ -222,37 +222,78 @@ def _weekend_multiplier(d: date) -> float:
 # ---------------------------------------------------------------------------
 def _pick_anomaly_resources(catalog: pd.DataFrame) -> dict[str, dict]:
     """
-    Choose:
-      * 5 "problem" resources that will show sustained cost overruns.
-      * 4 resources that will show sustained cost collapse.
-
-    The generator will apply these overrides on a specific date window so that
-    Phase 6 (anomaly detection) and Phase 8 (optimization) have real signal.
+    Choose resources for injected anomaly patterns that overlap the LAST
+    90 days of the data window, so downstream detectors can find them.
     """
-    sampled = catalog.sample(n=9, random_state=SEED).reset_index(drop=True)
+    sampled = catalog.sample(n=16, random_state=SEED).reset_index(drop=True)
 
-    overrun_days = 60
-    collapse_days = 90
+    # --- Time anchors (all relative to END_DATE so patterns are "recent") ---
+    overrun_start    = END_DATE - timedelta(days=75)
+    overrun_end      = END_DATE                    # 75-day overrun hits today
 
-    overrun_start = START_DATE + timedelta(days=120)
-    collapse_start = START_DATE + timedelta(days=200)
+    collapse_start   = END_DATE - timedelta(days=60)
+    collapse_end     = END_DATE                    # still collapsing
 
+    dormant_start    = END_DATE - timedelta(days=120)   # 4 months dormant
+    dormant_end      = END_DATE
+
+    growth_start     = END_DATE - timedelta(days=120)   # 4 months of growth
+    growth_end       = END_DATE
+
+    # --- Overlapping-window "collapse" (triggers recent_collapse) ---
+    # Move a slice of the sampled set to the present-window collapse.
     overrides: dict[str, dict] = {}
-    for i, row in sampled.iterrows():
-        if i < 5:
-            overrides[row["resource_id"]] = {
-                "kind": "overrun",
-                "start": overrun_start,
-                "end": overrun_start + timedelta(days=overrun_days),
-                "multiplier_range": (3.0, 6.0),
-            }
-        else:
-            overrides[row["resource_id"]] = {
-                "kind": "collapse",
-                "start": collapse_start,
-                "end": collapse_start + timedelta(days=collapse_days),
-                "multiplier_range": (0.05, 0.15),
-            }
+
+    # 5 overruns (still ongoing)
+    for i in range(5):
+        rid = sampled.iloc[i]["resource_id"]
+        overrides[rid] = {
+            "kind": "overrun",
+            "start": overrun_start,
+            "end": overrun_end,
+            "multiplier_range": (3.0, 6.0),
+        }
+
+    # 3 recent collapses (currently low, will trigger recent_collapse)
+    for i in range(5, 8):
+        rid = sampled.iloc[i]["resource_id"]
+        overrides[rid] = {
+            "kind": "collapse",
+            "start": collapse_start,
+            "end": collapse_end,
+            "multiplier_range": (0.05, 0.15),
+        }
+
+    # 3 dormant resources (near-zero for 4 months — triggers near_zero_cost)
+    for i in range(8, 11):
+        rid = sampled.iloc[i]["resource_id"]
+        overrides[rid] = {
+            "kind": "dormant",
+            "start": dormant_start,
+            "end": dormant_end,
+            "multiplier_range": (0.001, 0.005),   # ~$0.05-$0.50/day
+        }
+
+    # 3 storage-growth resources (steady +35%/month — triggers storage_growth)
+    for i in range(11, 14):
+        rid = sampled.iloc[i]["resource_id"]
+        overrides[rid] = {
+            "kind": "growth",
+            "start": growth_start,
+            "end": growth_end,
+            "monthly_growth_rate": 0.35,
+        }
+
+    # 2 oversized-per-unit resources (triggers oversized_by_unit_cost)
+    for i in range(14, 16):
+        rid = sampled.iloc[i]["resource_id"]
+        overrides[rid] = {
+            "kind": "oversized_unit",
+            "start": START_DATE,
+            "end": END_DATE,
+            "unit_price_multiplier": 8.0,   # 8× the normal implied unit price
+        }
+
     return overrides
 
 
@@ -298,11 +339,33 @@ def generate_records(catalog: pd.DataFrame) -> pd.DataFrame:
 
         # Apply anomaly overrides
         for rid, override in overrides.items():
-            if override["start"] <= current_date <= override["end"]:
-                mask = sampled["resource_id"] == rid
-                if mask.any():
-                    mult = np.random.uniform(*override["multiplier_range"])
-                    cost[mask.to_numpy()] = cost[mask.to_numpy()] * mult
+            mask = sampled["resource_id"] == rid
+            if not mask.any():
+                continue
+
+            mask_np = mask.to_numpy()
+            kind = override["kind"]
+            in_window = override["start"] <= current_date <= override["end"]
+
+            if not in_window:
+                continue
+
+            if kind in ("overrun", "collapse", "dormant"):
+                mult = np.random.uniform(*override["multiplier_range"])
+                cost[mask_np] = cost[mask_np] * mult
+
+            elif kind == "growth":
+                # Compute months elapsed since growth_start
+                days_in = (current_date - override["start"]).days
+                months = days_in / 30.0
+                growth = (1.0 + override["monthly_growth_rate"]) ** months
+                cost[mask_np] = cost[mask_np] * growth
+
+            elif kind == "oversized_unit":
+                # Don't change cost — change implied unit price so that
+                # cost_per_unit = cost / usage_quantity becomes 8× larger.
+                # We handle this below by scaling usage_quantity down.
+                pass
 
         # Random one-off spikes on ~15% of days
         if random.random() < 0.15:
@@ -317,6 +380,16 @@ def generate_records(catalog: pd.DataFrame) -> pd.DataFrame:
         # Derive usage_quantity from cost / implied unit price
         # Implied unit price is between 0.01 and 1.0 USD per unit
         implied_unit_price = np.random.uniform(0.01, 1.0, size=n_today)
+
+        # Apply oversized_unit override: scale implied price up 8× for those rows
+        for rid, override in overrides.items():
+            if override["kind"] != "oversized_unit":
+                continue
+            if not (override["start"] <= current_date <= override["end"]):
+                continue
+            mask = sampled["resource_id"].to_numpy() == rid
+            if mask.any():
+                implied_unit_price[mask] *= override["unit_price_multiplier"]
         sampled["usage_quantity"] = np.round(
             sampled["cost"].to_numpy() / implied_unit_price, 4
         )

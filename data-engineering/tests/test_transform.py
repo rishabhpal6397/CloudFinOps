@@ -26,4 +26,5 @@ def test_is_weekend(sample_df):
 def test_cost_per_unit(sample_df):
     out = transform.transform(sample_df)
     # cost 100.50 / usage 10.0 = 10.05
-    assert abs(out.loc[0, "cost_per_unit"] - 10.05) < 1e-6
+    actual = out["cost_per_unit"].iloc[0]
+    assert abs(float(str(actual)) - 10.05) < 1e-6
