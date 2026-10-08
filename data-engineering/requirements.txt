@@ -27,4 +27,4 @@ cryptography==43.0.3        # required by PyMySQL for MySQL 8 caching_sha2_passw
 scikit-learn==1.5.2
 
 # ---------- Phase 7: Forecasting ----------------
-# statsmodels==0.14.4
+statsmodels==0.14.4
